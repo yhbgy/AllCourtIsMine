@@ -156,7 +156,7 @@ def fill_team_member_info(driver, team_members):
         headcount_input.clear()
         headcount_input.send_keys(str(len(team_members) + 1))  # +1 for 예약자
         print(f"✅ 예상 인원 입력 완료: {len(team_members) + 1}명 (예약자 포함)")
-        time.sleep(2)
+        time.sleep(1)
 
         for idx, member in enumerate(team_members):
             i = idx + 2  # 시작을 user2부터
@@ -209,28 +209,8 @@ def fill_captcha_answer(driver):
                 elif "확인되었습니다" in alert_text:
                     alert.accept()
                     print("✅ 캡차 성공 → 예약 버튼 클릭")
-                    
-                    time.sleep(2)
-
-                    wait_for(driver, By.ID, "btnReservation1")
-                    driver.find_element(By.ID, "btnReservation1").click()
-
-                    # ✅ 예약 성공 알림 확인
-                    try:
-                        WebDriverWait(driver, 5).until(EC.alert_is_present())
-                        final_alert = driver.switch_to.alert
-                        final_msg = final_alert.text
-                        print(f"🟢 최종 알림: {final_msg}")
-                        final_alert.accept()
-
-                        if "예약되었습니다" in final_msg:
-                            return True
-                        else:
-                            return False
-                    except Exception as e:
-                        print(f"⚠️ 예약 알림 확인 실패: {e}")
-                        return False
-
+                    return True
+                
                 else:
                     alert.accept()
                     print(f"⚠️ 예외적 알림 발생: '{alert_text}' → 중단")
@@ -257,3 +237,24 @@ def fill_captcha_answer(driver):
             return False
 
         attempt += 1
+
+def submit_reservation(driver):
+    try:
+        wait_for(driver, By.ID, "btnReservation1")
+        driver.find_element(By.ID, "btnReservation1").click()
+
+        # 최종 알림 확인
+        WebDriverWait(driver, 5).until(EC.alert_is_present())
+        final_alert = driver.switch_to.alert
+        final_msg = final_alert.text
+        print(f"🟢 최종 알림: {final_msg}")
+        final_alert.accept()
+
+        if "예약되었습니다" in final_msg:
+            return True
+        else:
+            return False
+
+    except Exception as e:
+        print(f"⚠️ 예약 버튼 클릭 또는 알림 실패: {e}")
+        return False
