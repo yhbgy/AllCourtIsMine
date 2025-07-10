@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 # 드라이버 전역 생성 (로그인 유지용)
 options = Options()
-# options.add_argument("--headless")
+options.add_argument("--headless")
 options.add_argument("--disable-gpu")   # (Windows에서 종종 필요)
 options.add_argument("--window-size=1920x968")
 
@@ -164,7 +164,7 @@ if __name__ == "__main__":
     # schedule.every().day.at("07:00").do(run_daily)
 
     TARGETS = [
-        ReservationTarget("희망대", None, ["토"], ["20:00"]),
+        ReservationTarget("양지", "6번 코트", ["토"], ["12:00"]),
     ]
     login_only()
     ping_before_reservation()
