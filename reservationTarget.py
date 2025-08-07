@@ -64,18 +64,22 @@ class ReservationTarget:
                 if cat != category and cat != "any":
                     continue
 
-                # 수내의 경우, 18시 이후면 1~3번만 허용
-                if evening_only and self.group_name == "수내" and court not in ["1번 코트", "2번 코트", "3번 코트"]:
-                    continue
-                # 양지의 경우, 18시 이후면 4~6번만 허용
-                elif evening_only and self.group_name == "양지" and court not in ["4번 코트", "5번 코트", "6번 코트"]:
-                    continue
-                # 탄천의 경우, 18시 이후면 1~2번만 허용
-                elif evening_only and self.group_name == "탄천" and court not in ["1번 코트", "2번 코트"]:
-                    continue
-                # 희망대의 경우, 18시 이후면 2번만 허용
-                elif evening_only and self.group_name == "희망대" and court not in ["2번 코트"]:
-                    continue
+                # 평일 저녁(18시 이후)인 경우에만 그룹별 제한 적용, 주말엔 제한이 없다
+                if evening_only and category == "평일":
+                    if self.group_name == "수내":
+                        allowed = ["1번 코트", "2번 코트", "3번 코트"]
+                    elif self.group_name == "양지":
+                        allowed = ["4번 코트", "5번 코트", "6번 코트"]
+                    elif self.group_name == "탄천":
+                        allowed = ["1번 코트", "2번 코트"]
+                    elif self.group_name == "희망대":
+                        allowed = ["2번 코트"]
+                    else:
+                        allowed = None
+
+                    # allowed 리스트가 정의되어 있고, 현재 court가 그 안에 없으면 스킵
+                    if allowed is not None and court not in allowed:
+                        continue
 
                 self.fac_ids.append((court, fac))
             
